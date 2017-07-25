@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2017.1 (Build 792U)" ts="2017-07-25 12:32:38">
+<Class name="Chat.WebSocketEcho">
+<Description>
+http://localhost:57772/csp/docbook/DocBook.UI.Page.cls?KEY=GCGI_oper_config#GCGI_websockets</Description>
+<Super>%CSP.WebSocket</Super>
+<TimeChanged>64489,36636.660504</TimeChanged>
+<TimeCreated>64489,36636.660504</TimeCreated>
+
+<Method name="OnPreServer">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[   Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="Server">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+   Set timeout=10
+   For  {
+      Set len=32656
+      Set data=..Read(.len, .status, timeout)
+      If $$$ISERR(status) {
+         If $$$GETERRORCODE(status) = $$$CSPWebSocketClosed {
+             Quit
+         }
+         If $$$GETERRORCODE(status) = $$$CSPWebSocketTimeout {
+               Set status=..Write("Server timed-out at "_$Horolog)
+         }
+      }
+      else {
+         If data="exit" Quit
+         Set status=..Write(data)
+      }
+   }
+   Set status=..EndServer()
+   Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="OnPostServer">
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[   Quit $$$OK
+]]></Implementation>
+</Method>
+</Class>
+</Export>
